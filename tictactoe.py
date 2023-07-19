@@ -25,10 +25,10 @@ def player(board):
     if all(val == EMPTY for val in flattened_board):
         return X
 
-    count_X = (val for val in flattened_board if val == X)
-    count_O = (val for val in flattened_board if val == O)
+    count_X = [val for val in flattened_board if val == X]
+    count_O = [val for val in flattened_board if val == O]
 
-    if count_X == count_O:
+    if len(count_X) == len(count_O):
         return X
 
     return O
@@ -64,14 +64,22 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    if terminal(board):
+        flattened_board = [val for row in board for val in row]
+        count_X = [val for val in flattened_board if val == X]
+        count_O = [val for val in flattened_board if val == O]
+
+        if len(count_X) > len(count_O):
+            return X
+        else:
+            return O
 
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    return True
 
 
 def utility(board):
