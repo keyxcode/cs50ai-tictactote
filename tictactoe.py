@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import random
 
 X = "X"
 O = "O"
@@ -113,4 +114,13 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if terminal(board):
+        return None
+
+    current_player = player(board)
+    avail_actions = list(actions(board))
+    print(avail_actions)
+
+    rand_idx = random.randrange(len(avail_actions))
+
+    return avail_actions[rand_idx]
