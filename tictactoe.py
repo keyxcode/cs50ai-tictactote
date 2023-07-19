@@ -13,16 +13,25 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY]]
+    return [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]]
 
 
 def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    flattened_board = [val for row in board for val in row]
+
+    if all(val == EMPTY for val in flattened_board):
+        return X
+
+    count_X = (val for val in flattened_board if val == X)
+    count_O = (val for val in flattened_board if val == O)
+
+    if count_X == count_O:
+        return X
+
+    return O
 
 
 def actions(board):
