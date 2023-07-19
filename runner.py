@@ -88,7 +88,6 @@ while True:
 
         game_over = ttt.terminal(board)
         player = ttt.player(board)
-        print(player)
 
         # Show title
         if game_over:
