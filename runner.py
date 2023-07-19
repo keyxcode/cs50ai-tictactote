@@ -21,7 +21,7 @@ user = None
 board = ttt.initial_state()
 ai_turn = False
 
-print(ttt.player(board))
+print(ttt.result(board, (0, 1)))
 
 while True:
     for event in pygame.event.get():

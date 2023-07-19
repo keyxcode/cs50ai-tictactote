@@ -38,14 +38,26 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    board_size = len(board)
+    avail_actions = set()
+
+    for i in range(board_size):
+        for j in range(board_size):
+            if board[i][j] == EMPTY:
+                avail_actions.add((i, j))
+
+    return avail_actions
 
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    current_player = player(board)
+    i, j = action
+    board[i][j] = current_player
+
+    return board
 
 
 def winner(board):
