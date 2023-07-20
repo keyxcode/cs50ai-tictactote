@@ -3,7 +3,6 @@ Tic Tac Toe Player
 """
 
 import math
-import random
 
 X = "X"
 O = "O"
@@ -119,8 +118,55 @@ def minimax(board):
 
     current_player = player(board)
     avail_actions = list(actions(board))
-    print(avail_actions)
 
-    rand_idx = random.randrange(len(avail_actions))
+    minimax_func = min_value if current_player == X else max_value
+    chosen_utility = -math.inf if current_player == X else math.inf
+    chosen_action = None
 
-    return avail_actions[rand_idx]
+    for action in avail_actions:
+        new_board = result(board, action)
+        action_utility = minimax_func(new_board)
+        if current_player == X:
+            if action_utility > chosen_utility:
+                chosen_action = action
+        elif current_player == O:
+            if action_utility < chosen_utility:
+                chosen_action = action
+
+    return chosen_action
+
+
+def max_value(board):
+    if terminal(board):
+        print("board is terminal with value of", utility(board))
+        return utility(board)
+
+    avail_actions = list(actions(board))
+    chosen_utility = -math.inf
+
+    for action in avail_actions:
+        print("max considering option", action)
+        new_board = result(board, action)
+        action_utility = min_value(new_board)
+        if action_utility > chosen_utility:
+            chosen_utility = action_utility
+
+    return chosen_utility
+
+
+def min_value(board):
+    if terminal(board):
+        print("board is terminal with value of", utility(board))
+        return utility(board)
+
+    avail_actions = list(actions(board))
+    chosen_utility = math.inf
+
+    for action in avail_actions:
+        print("min considering option", action)
+        new_board = result(board, action)
+        action_utility = max_value(new_board)
+        if action_utility < chosen_utility:
+            chosen_utility = action_utility
+
+    return chosen_utility
