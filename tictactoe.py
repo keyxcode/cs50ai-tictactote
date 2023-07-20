@@ -141,19 +141,20 @@ def minimax(board):
     avail_actions = list(actions(board))
 
     value_func = min_value if current_player == X else max_value
-    chosen_utility = -math.inf if current_player == X else math.inf
-    chosen_action = None
+    best_utility = -math.inf if current_player == X else math.inf
+    best_action = None
 
     for action in avail_actions:
         new_board = result(board, action)
         action_utility = value_func(new_board)
-        if current_player == X and action_utility > chosen_utility:
-            chosen_utility = action_utility
-            chosen_action = action
-        elif current_player == O and action_utility < chosen_utility:
-            chosen_utility = action_utility
-            chosen_action = action
-    return chosen_action
+        if current_player == X and action_utility > best_utility:
+            best_utility = action_utility
+            best_action = action
+        elif current_player == O and action_utility < best_utility:
+            best_utility = action_utility
+            best_action = action
+
+    return best_action
 
 
 def max_value(board):
