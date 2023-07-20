@@ -38,7 +38,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    board_size = len(board)
+    board_size = 3
     avail_actions = set()
 
     for i in range(board_size):
@@ -55,9 +55,16 @@ def result(board, action):
     """
     current_player = player(board)
     i, j = action
-    board[i][j] = current_player
+    # print("CURRENT PLAYER", current_player)
 
-    return board
+    # print("RESULT INIT", board)
+
+    new_board = board[:]
+    new_board[i][j] = current_player
+
+    # print("RESULT AFTR", new_board)
+
+    return new_board
 
 
 def winner(board):
@@ -124,28 +131,39 @@ def minimax(board):
     chosen_action = None
 
     for action in avail_actions:
+        # print("MAIN LOOP: considering", action, "for player", current_player)
         new_board = result(board, action)
         action_utility = minimax_func(new_board)
-        if current_player == X:
-            if action_utility > chosen_utility:
-                chosen_action = action
-        elif current_player == O:
-            if action_utility < chosen_utility:
-                chosen_action = action
+        if current_player == X and action_utility > chosen_utility:
+            # print("MAIN LOOP chosen", action)
+            chosen_utility = action_utility
+            chosen_action = action
+        elif current_player == O and action_utility < chosen_utility:
+            # print("MAIN LOOP chosen", action)
+            chosen_utility = action_utility
+            chosen_action = action
+        # print("MAIN LOOP BOARD AFTER CONSIDERING ACTION", action, board)
 
+    # print("MAIN LOOP FINAL ACTION IS", chosen_action)
     return chosen_action
 
 
 def max_value(board):
     if terminal(board):
-        print("board is terminal with value of", utility(board))
+        # # print(
+        #     "board is terminal with value of",
+        #     utility(board),
+        #     "winner is",
+        #     winner(board),
+        # )
         return utility(board)
 
     avail_actions = list(actions(board))
     chosen_utility = -math.inf
+    # print("max_value: max has options avail", avail_actions)
 
     for action in avail_actions:
-        print("max considering option", action)
+        # print("max_value: max considering option", action)
         new_board = result(board, action)
         action_utility = min_value(new_board)
         if action_utility > chosen_utility:
@@ -156,14 +174,20 @@ def max_value(board):
 
 def min_value(board):
     if terminal(board):
-        print("board is terminal with value of", utility(board))
+        # # print(
+        #     "board is terminal with value of",
+        #     utility(board),
+        #     "winner is",
+        #     winner(board),
+        # )
         return utility(board)
 
     avail_actions = list(actions(board))
     chosen_utility = math.inf
+    # print("min_value: min has options avail", avail_actions)
 
     for action in avail_actions:
-        print("min considering option", action)
+        # print("min_value: min considering option", action)
         new_board = result(board, action)
         action_utility = max_value(new_board)
         if action_utility < chosen_utility:
