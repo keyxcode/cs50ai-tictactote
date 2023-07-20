@@ -10,10 +10,18 @@ board = [
     [O, X, X],
 ]
 
+board2 = [
+    [O, O, X],
+    [X, X, O],
+    [O, X, X],
+]
+
 # print(ttt.player(board))
 # print(ttt.result(board, (0, 0)))
 # print(ttt.minimax(board))
 
 print(ttt.actions(board))
-print(ttt.terminal([["O", "O", "X"], ["X", "X", "O"], ["O", "X", "X"]]))
 print(ttt.max_value(board))
+
+print(ttt.terminal(board2))
+print(ttt.utility(board2))

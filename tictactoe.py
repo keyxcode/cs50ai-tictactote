@@ -3,6 +3,8 @@ Tic Tac Toe Player
 """
 
 import math
+import random
+from copy import deepcopy
 
 X = "X"
 O = "O"
@@ -20,15 +22,28 @@ def initial_state():
     ]
 
 
+def flatten_board(board):
+    return [val for row in board for val in row]
+
+
+def board_is_empty(board):
+    flattened_board = flatten_board(board)
+    return all(val == EMPTY for val in flattened_board)
+
+
+def board_is_full(board):
+    flattened_board = flatten_board(board)
+    return all(val != EMPTY for val in flattened_board)
+
+
 def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    flattened_board = [val for row in board for val in row]
-
-    if all(val == EMPTY for val in flattened_board):
+    if board_is_empty(board):
         return X
 
+    flattened_board = flatten_board(board)
     count_X = [val for val in flattened_board if val == X]
     count_O = [val for val in flattened_board if val == O]
 
@@ -63,7 +78,7 @@ def result(board, action):
 
     # print("RESULT INIT", board)
 
-    new_board = board[:]
+    new_board = deepcopy(board)
     new_board[i][j] = current_player
 
     # print("RESULT AFTR", new_board)
@@ -75,41 +90,63 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    if terminal(board):
-        flattened_board = [val for row in board for val in row]
-        count_X = [val for val in flattened_board if val == X]
-        count_O = [val for val in flattened_board if val == O]
+    for player in (X, O):
+        # check vertical
+        for row in board:
+            if row == [player] * 3:
+                return player
 
-        if len(count_X) > len(count_O):
-            return X
-        else:
-            return O
+        # check horizontal
+        for i in range(3):
+            column = [board[x][i] for x in range(3)]
+            if column == [player] * 3:
+                return player
 
+        # check diagonal
+        if [board[i][i] for i in range(0, 3)] == [player] * 3:
+            return player
+
+        elif [board[i][~i] for i in range(0, 3)] == [player] * 3:
+            return player
     return None
+    # if terminal(board):
+    #     flattened_board = [val for row in board for val in row]
+    #     count_X = [val for val in flattened_board if val == X]
+    #     count_O = [val for val in flattened_board if val == O]
+
+    #     if len(count_X) > len(count_O):
+    #         return X
+    #     else:
+    #         return O
+
+    # return None
 
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    won_rows = (
-        (board[0][0] == board[0][1] == board[0][2] and board[0][0] != EMPTY)
-        or (board[1][0] == board[1][1] == board[1][2] and board[1][0] != EMPTY)
-        or (board[2][0] == board[2][1] == board[2][2] and board[2][0] != EMPTY)
-    )
-    won_cols = (
-        (board[0][0] == board[1][0] == board[2][0] and board[0][0] != EMPTY)
-        or (board[0][1] == board[1][1] == board[2][1] and board[0][1] != EMPTY)
-        or (board[0][2] == board[1][2] == board[2][2] and board[0][2] != EMPTY)
-    )
-    won_diags = (
-        board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY
-    ) or (board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY)
+    # won_rows = (
+    #     (board[0][0] == board[0][1] == board[0][2] and board[0][0] != EMPTY)
+    #     or (board[1][0] == board[1][1] == board[1][2] and board[1][0] != EMPTY)
+    #     or (board[2][0] == board[2][1] == board[2][2] and board[2][0] != EMPTY)
+    # )
+    # won_cols = (
+    #     (board[0][0] == board[1][0] == board[2][0] and board[0][0] != EMPTY)
+    #     or (board[0][1] == board[1][1] == board[2][1] and board[0][1] != EMPTY)
+    #     or (board[0][2] == board[1][2] == board[2][2] and board[0][2] != EMPTY)
+    # )
+    # won_diags = (
+    #     board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY
+    # ) or (board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY)
 
-    flattened_board = [val for row in board for val in row]
-    full_board = all(val != EMPTY for val in flattened_board)
+    if winner(board) != None:
+        return True
 
-    return won_rows or won_cols or won_diags or full_board
+    if board_is_full(board):
+        return True
+
+    return False
 
 
 def utility(board):
@@ -129,6 +166,10 @@ def minimax(board):
     """
     if terminal(board):
         return None
+
+    if board_is_empty(board):
+        print("EMPTY!!!")
+        return (random.randrange(2), random.randrange(2))
 
     current_player = player(board)
     avail_actions = list(actions(board))
